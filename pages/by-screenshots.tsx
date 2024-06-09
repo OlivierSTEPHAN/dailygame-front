@@ -58,13 +58,13 @@ const ByScreenshots: React.FC = () => {
   }, [started, currentIndex, input, score]);
 
   const fetchScreenshots = async () => {
-    const response = await fetch('http://193.203.190.11:8080/api/daily-games/screenshots');
+    const response = await fetch('https://srv541447.hstgr.cloud:8443/api/daily-games/screenshots');
     const data = await response.json();
     setScreenshots(data.screenshots);
   };
 
   const checkAnswer = async () => {
-    const response = await fetch('http://193.203.190.11:8080/api/daily-games/screenshots', {
+    const response = await fetch('https://srv541447.hstgr.cloud:8443/api/daily-games/screenshots', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ const ByScreenshots: React.FC = () => {
 
   const fetchSuggestions = async (query: string) => {
     if (query.length < 3) return;
-    const response = await fetch(`http://193.203.190.11:8080/api/games/autocomplete?name=${query}`);
+    const response = await fetch(`https://srv541447.hstgr.cloud:8443/api/games/autocomplete?name=${query}`);
     const data = await response.json();
     setSuggestions(data);
   };
