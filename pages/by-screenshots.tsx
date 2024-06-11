@@ -19,6 +19,7 @@ const ByScreenshots: React.FC = () => {
   const [score, setScore] = useState<number[]>([]);
   const suggestionsRef = useRef<HTMLDivElement>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
 
   useEffect(() => {
     fetchScreenshotsUrl();
@@ -83,6 +84,7 @@ const ByScreenshots: React.FC = () => {
     setInput('');
     setSuggestions([]);
     setShowSuggestions(false);
+    setSelectedIndex(-1);
   };
 
   const fetchSuggestions = async (query: string) => {
@@ -112,6 +114,20 @@ const ByScreenshots: React.FC = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowDown') {
+      setSelectedIndex(prevIndex => Math.min(prevIndex + 1, suggestions.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      setSelectedIndex(prevIndex => Math.max(prevIndex - 1, 0));
+    } else if (e.key === 'Enter') {
+      if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
+        setInput(suggestions[selectedIndex]);
+        setShowSuggestions(false);
+        setSelectedIndex(-1);
+      }
+    }
+  };
 
   const startGame = () => {
     setStarted(true);
@@ -163,6 +179,7 @@ const ByScreenshots: React.FC = () => {
                     type="text"
                     value={input}
                     onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
                     className="p-2 border border-gray-300 rounded w-full md:w-[70%]"
                     placeholder="Enter game name"
                     onFocus={() => setShowSuggestions(true)}
@@ -172,10 +189,11 @@ const ByScreenshots: React.FC = () => {
                       {suggestions.map((suggestion, index) => (
                         <div
                           key={index}
-                          className="p-2 hover:bg-gray-200 cursor-pointer"
+                          className={`p-2 hover:bg-gray-200 cursor-pointer ${index === selectedIndex ? 'bg-gray-200' : ''}`}
                           onClick={() => {
                             setInput(suggestion);
                             setShowSuggestions(false);
+                            setSelectedIndex(-1);
                           }}
                         >
                           {suggestion}
@@ -201,7 +219,7 @@ const ByScreenshots: React.FC = () => {
                 >
                   Play again
                 </button>
-                <h3 className="text-xl font-bold my-2">Correct answers :</h3>
+                <h3 className="text-xl font-bold my-2">Correct answers:</h3>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-start">
                   {correctAnswersFromServer && correctAnswersFromServer.name.map((name, index) => (
                     <li key={index} className={`p-4 ${score[index] === 1 ? 'border border-green-500' : 'border border-red-500'} rounded-lg`}>
