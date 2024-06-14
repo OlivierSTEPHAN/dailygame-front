@@ -1,7 +1,19 @@
+// ByScreenshots.tsx
+
 import { useState, useEffect, useCallback, useRef } from "react";
 import Head from "next/head";
 import Header from "../components/Header";
 import debounce from "lodash.debounce";
+import {
+  fetchScreenshotsUrl,
+  fetchScreenshots,
+  submitAnswer,
+  fetchSuggestions,
+} from "../utils/api";
+import GameEnd from "@/components/ByScreenshot/GameEnd";
+import GamePlay from "@/components/ByScreenshot/GamePlay";
+import GameStart from "@/components/ByScreenshot/GameStart";
+import Layout from "@/components/Layout";
 
 type Screenshot = {
   name: string[];
@@ -23,8 +35,8 @@ const ByScreenshots: React.FC = () => {
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
   useEffect(() => {
-    fetchScreenshotsUrl();
-    fetchScreenshots();
+    fetchScreenshotsUrl().then((data) => setScreenshots(data));
+    fetchScreenshots().then((data) => setCorrectAnswersFromServer(data));
     const savedState = localStorage.getItem("gameState");
     if (savedState) {
       const now = new Date();
@@ -65,35 +77,9 @@ const ByScreenshots: React.FC = () => {
     localStorage.setItem("gameState", JSON.stringify(gameState));
   }, [started, currentIndex]);
 
-  const fetchScreenshotsUrl = async () => {
-    const response = await fetch(
-      "https://srv541447.hstgr.cloud:8443/api/daily-games/screenshots/url"
-    );
-    const data = await response.json();
-    setScreenshots(data.screenshots);
-  };
-
-  const fetchScreenshots = async () => {
-    const response = await fetch(
-      "https://srv541447.hstgr.cloud:8443/api/daily-games/screenshots"
-    );
-    const data = await response.json();
-    setCorrectAnswersFromServer(data);
-  };
-
   const checkAnswer = async () => {
-    const response = await fetch(
-      "https://srv541447.hstgr.cloud:8443/api/daily-games/screenshots",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ index: currentIndex, answer: input }),
-      }
-    );
+    const result = await submitAnswer(currentIndex, input);
     setAnswers([...answers, input]);
-    const result = await response.json();
     setScore((prevScore) => [...prevScore, result ? 1 : 0]);
     setCurrentIndex(currentIndex + 1);
     setInput("");
@@ -102,18 +88,11 @@ const ByScreenshots: React.FC = () => {
     setSelectedIndex(-1);
   };
 
-  const fetchSuggestions = async (query: string) => {
-    if (query.length < 3) return;
-    const response = await fetch(
-      `https://srv541447.hstgr.cloud:8443/api/games/autocomplete?name=${query}`
-    );
-    const data = await response.json();
-    setSuggestions(data);
-    setShowSuggestions(true);
-  };
-
   const debouncedFetchSuggestions = useCallback(
-    debounce(fetchSuggestions, 300),
+    debounce((query: string) => {
+      fetchSuggestions(query).then((data) => setSuggestions(data));
+      setShowSuggestions(true);
+    }, 300),
     []
   );
 
@@ -169,136 +148,40 @@ const ByScreenshots: React.FC = () => {
   };
 
   return (
-    <div>
-      <Head>
-        <title>By Screenshots</title>
-        <meta name="description" content="Guess the game by screenshots" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <Header />
-
+    <Layout title={"By Screenshot"}>
       <main className="container mx-auto p-4">
         {!started ? (
-          <div className="text-center">
-            <h1 className="text-2xl font-bold my-4">
-              Guess the Game by Screenshots
-            </h1>
-            <p>
-              Each screenshot corresponds to a game, find all the game names and
-              you win!
-            </p>
-            <button
-              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
-              onClick={startGame}
-            >
-              Start
-            </button>
-          </div>
+          <GameStart startGame={startGame} />
         ) : (
           <div className="text-center">
             {screenshots.length > 0 && currentIndex < screenshots.length ? (
-              <div className="flex flex-col md:flex-row items-start md:items-center justify-center">
-                <div className="mx-auto my-4 max-w-full h-auto md:w-3/4 md:mr-4">
-                  <div className="inline-block max-h-[70vh] max-w-full overflow-scroll">
-                    <img
-                      src={screenshots[currentIndex]}
-                      alt={`Screenshot ${currentIndex + 1}`}
-                      className="object-contain w-full h-auto"
-                    />
-                  </div>
-                </div>
-                <div className="mx-auto my-4 relative flex flex-col w-full md:flex-row md:items-center">
-                  <input
-                    type="text"
-                    value={input}
-                    onChange={handleInputChange}
-                    onKeyDown={handleKeyDown}
-                    className="p-2 border border-gray-300 rounded w-full md:w-[70%]"
-                    placeholder="Enter game name"
-                    onFocus={() => setShowSuggestions(true)}
-                  />
-                  {showSuggestions && suggestions.length > 0 && (
-                    <div
-                      ref={suggestionsRef}
-                      className="absolute top-full left-0 w-full bg-white border border-gray-300 rounded-t-none rounded-b z-10 max-h-60 overflow-y-auto"
-                    >
-                      {suggestions.map((suggestion, index) => (
-                        <div
-                          key={index}
-                          className={`p-2 cursor-pointer ${
-                            index === selectedIndex ? "bg-gray-200" : ""
-                          }`}
-                          onMouseDown={() => {
-                            setInput(suggestion);
-                            setShowSuggestions(false);
-                            setSelectedIndex(-1);
-                          }}
-                        >
-                          {suggestion}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  <button
-                    className="mt-2 md:mt-0 md:ml-4 p-2 border bg-green-600 text-white rounded w-full md:w-[30%]"
-                    onClick={checkAnswer}
-                  >
-                    Submit
-                  </button>
-                </div>
-              </div>
+              <GamePlay
+                screenshots={screenshots}
+                currentIndex={currentIndex}
+                input={input}
+                handleInputChange={handleInputChange}
+                handleKeyDown={handleKeyDown}
+                checkAnswer={checkAnswer}
+                suggestions={suggestions}
+                showSuggestions={showSuggestions}
+                suggestionsRef={suggestionsRef}
+                selectedIndex={selectedIndex}
+                setInput={setInput}
+                setShowSuggestions={setShowSuggestions}
+                setSelectedIndex={setSelectedIndex}
+              />
             ) : (
-              <div className="">
-                <h2 className="text-2xl font-bold my-4">
-                  GG, try again tomorrow !
-                </h2>
-                <p>
-                  Score :{" "}
-                  {score.reduce((acc, currentValue) => acc + currentValue, 0)}
-                </p>
-                <button
-                  className="mt-8 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 ease-in-out"
-                  onClick={endGame}
-                >
-                  Play again
-                </button>
-                <h3 className="text-xl font-bold my-2">Correct answers :</h3>
-                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-start">
-                  {correctAnswersFromServer &&
-                    correctAnswersFromServer.name.map((name, index) => (
-                      <li
-                        key={index}
-                        className={`p-4 ${
-                          score[index] === 1 && answers[index] === name
-                            ? "golden-border"
-                            : score[index] === 1
-                            ? "border border-green-500"
-                            : "border border-red-500"
-                        } rounded-lg`}
-                      >
-                        <p className="font-bold">Screenshot {index + 1}</p>
-                        <img
-                          src={correctAnswersFromServer.url[index]}
-                          alt={`Capture d'écran ${index + 1}`}
-                          className="mt-2 w-full"
-                        />
-                        <p className="mt-2">
-                          <strong>Correct answer :</strong> {name}
-                        </p>
-                        <p className="mt-2">
-                          <strong>Your answer :</strong>{" "}
-                          {answers[index] || "No answer 😢"}
-                        </p>
-                      </li>
-                    ))}
-                </ul>
-              </div>
+              <GameEnd
+                score={score}
+                correctAnswersFromServer={correctAnswersFromServer!}
+                answers={answers}
+                endGame={endGame}
+              />
             )}
           </div>
         )}
       </main>
-    </div>
+    </Layout>
   );
 };
 
