@@ -124,7 +124,7 @@ function ByCharacteristics() {
 
   const renderYearComparison = (correctYear: number, guessedYear: number) => {
     if (guessedYear < correctYear) {
-      return <span className="text-red-500">↓↑ {guessedYear}</span>;
+      return <span className="text-red-500">↑ {guessedYear}</span>;
     } else if (guessedYear > correctYear) {
       return <span className="text-red-500">↓ {guessedYear}</span>;
     } else {
