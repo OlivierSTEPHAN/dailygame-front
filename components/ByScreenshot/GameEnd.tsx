@@ -4,7 +4,7 @@ import React from "react";
 
 interface GameEndProps {
   score: number[];
-  correctAnswersFromServer: Screenshot;
+  correctAnswersFromServer: Screenshot | undefined;
   answers: string[];
   endGame: () => void;
 }

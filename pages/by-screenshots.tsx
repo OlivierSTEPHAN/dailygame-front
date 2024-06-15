@@ -1,24 +1,20 @@
 // ByScreenshots.tsx
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import Head from "next/head";
-import Header from "../components/Header";
 import debounce from "lodash.debounce";
 import {
   fetchScreenshotsUrl,
   fetchScreenshots,
-  submitAnswer,
+  submitAnswerScreenshot,
   fetchSuggestions,
 } from "../utils/api";
 import GameEnd from "@/components/ByScreenshot/GameEnd";
 import GamePlay from "@/components/ByScreenshot/GamePlay";
-import GameStart from "@/components/ByScreenshot/GameStart";
+import GameStart from "@/components/GameStart";
 import Layout from "@/components/Layout";
+import { Screenshot } from "@/model/Screenshot";
 
-type Screenshot = {
-  name: string[];
-  url: string[];
-};
+const GAME_STATE_KEY = "screenshotGameState";
 
 const ByScreenshots: React.FC = () => {
   const [started, setStarted] = useState(false);
@@ -37,14 +33,14 @@ const ByScreenshots: React.FC = () => {
   useEffect(() => {
     fetchScreenshotsUrl().then((data) => setScreenshots(data));
     fetchScreenshots().then((data) => setCorrectAnswersFromServer(data));
-    const savedState = localStorage.getItem("gameState");
+    const savedState = localStorage.getItem(GAME_STATE_KEY);
     if (savedState) {
       const now = new Date();
       const currentDay = now.getDate();
       const currentMonth = now.getMonth();
       const currentYear = now.getFullYear();
       const currentDate = `${currentDay}-${currentMonth}-${currentYear}`;
-      const savedState = localStorage.getItem("gameState");
+      const savedState = localStorage.getItem(GAME_STATE_KEY);
       if (savedState) {
         const { started, currentIndex, answers, score, updatedAt } =
           JSON.parse(savedState);
@@ -54,7 +50,7 @@ const ByScreenshots: React.FC = () => {
           setAnswers(answers);
           setScore(score);
         } else {
-          localStorage.removeItem("gameState");
+          localStorage.removeItem(GAME_STATE_KEY);
         }
       }
     }
@@ -74,11 +70,11 @@ const ByScreenshots: React.FC = () => {
       score,
       updatedAt: currentDate,
     };
-    localStorage.setItem("gameState", JSON.stringify(gameState));
+    localStorage.setItem(GAME_STATE_KEY, JSON.stringify(gameState));
   }, [started, currentIndex]);
 
   const checkAnswer = async () => {
-    const result = await submitAnswer(currentIndex, input);
+    const result = await submitAnswerScreenshot(currentIndex, input);
     setAnswers([...answers, input]);
     setScore((prevScore) => [...prevScore, result ? 1 : 0]);
     setCurrentIndex(currentIndex + 1);
@@ -151,7 +147,11 @@ const ByScreenshots: React.FC = () => {
     <Layout title={"By Screenshot"}>
       <main className="container mx-auto p-4">
         {!started ? (
-          <GameStart startGame={startGame} />
+          <GameStart
+            startGame={startGame}
+            title="Guess the Game by Screenshots"
+            description="Each screenshot corresponds to a game, find all the game names and you win!"
+          />
         ) : (
           <div className="text-center">
             {screenshots.length > 0 && currentIndex < screenshots.length ? (
@@ -173,7 +173,7 @@ const ByScreenshots: React.FC = () => {
             ) : (
               <GameEnd
                 score={score}
-                correctAnswersFromServer={correctAnswersFromServer!}
+                correctAnswersFromServer={correctAnswersFromServer}
                 answers={answers}
                 endGame={endGame}
               />

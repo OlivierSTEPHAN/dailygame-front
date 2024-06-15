@@ -18,9 +18,12 @@ function ChooseGame() {
           </Link>
         </div>
         <div className="w-full md:w-1/2 lg:w-1/4 mb-4 md:pl-2">
-          <div className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded block text-center cursor-not-allowed">
-            🚧 By Description 🚧 ← WIP
-          </div>
+          <Link
+            href="/by-characteristics"
+            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded block text-center"
+          >
+            By Characteristics
+          </Link>
         </div>
       </div>
     </div>

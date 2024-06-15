@@ -1,9 +1,5 @@
 // pages/index.tsx
 
-import Head from "next/head";
-import Header from "../components/Header";
-import Footer from "../components/Footer"; // Import the Footer component
-import Link from "next/link";
 import Layout from "@/components/Layout";
 import ChooseGame from "@/components/ChooseGame";
 
