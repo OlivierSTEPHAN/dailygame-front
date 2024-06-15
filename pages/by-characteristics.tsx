@@ -1,3 +1,4 @@
+import Table from "@/components/ByCharacteristics/Table";
 import GameInput from "@/components/GameInput";
 import GameStart from "@/components/GameStart";
 import Layout from "@/components/Layout";
@@ -58,6 +59,7 @@ function ByCharacteristics() {
       return;
     }
     const result = await submitAnswerCharacteristics(answer);
+    console.log(result);
     if (result != undefined) {
       setAnswers((prevAnswers) => [...prevAnswers, result]);
       if (compareGame(result, correctAnswer!)) {
@@ -130,157 +132,6 @@ function ByCharacteristics() {
     }
   };
 
-  const renderTable = (
-    answers: Characteristics[],
-    correctAnswer: Characteristics
-  ) => {
-    return (
-      <div className="overflow-x-auto">
-        <table className="table-auto w-full mt-4 border-collapse">
-          <thead>
-            <tr>
-              <th className="px-4 py-2">#</th>
-              <th className="px-4 py-2">Name</th>
-              <th className="px-4 py-2">Genres</th>
-              <th className="px-4 py-2">POV</th>
-              <th className="px-4 py-2">Franchises</th>
-              <th className="px-4 py-2">Companies</th>
-              <th className="px-4 py-2">Platforms</th>
-              <th className="px-4 py-2">Year</th>
-              <th className="px-4 py-2">Game Modes</th>
-              <th className="px-4 py-2">Game Engines</th>
-            </tr>
-          </thead>
-          <tbody>
-            {answers.length != 0 ??
-              answers.map((answer, index) => (
-                <tr key={index}>
-                  <td className="border px-4 py-1">{index + 1}</td>
-                  <td
-                    className={`border px-4 py-1 ${getHighlightedClass(
-                      correctAnswer.name,
-                      answer.name
-                    )}`}
-                  >
-                    {answer.name || "-"}
-                  </td>
-                  <td className="border px-4 py-1">
-                    {answer.genres.length > 0
-                      ? answer.genres.map((genre) => (
-                          <span
-                            key={genre}
-                            className={getHighlightedClass(
-                              correctAnswer.genres,
-                              [genre]
-                            )}
-                          >
-                            {genre}{" "}
-                          </span>
-                        ))
-                      : "-"}
-                  </td>
-                  <td className="border px-4 py-1">
-                    {answer.pov.length > 0
-                      ? answer.pov.map((pov) => (
-                          <span
-                            key={pov}
-                            className={getHighlightedClass(correctAnswer.pov, [
-                              pov,
-                            ])}
-                          >
-                            {pov}{" "}
-                          </span>
-                        ))
-                      : "-"}
-                  </td>
-                  <td className="border px-4 py-1">
-                    {answer.franchises.length > 0
-                      ? answer.franchises.map((franchise) => (
-                          <span
-                            key={franchise}
-                            className={getHighlightedClass(
-                              correctAnswer.franchises,
-                              [franchise]
-                            )}
-                          >
-                            {franchise}{" "}
-                          </span>
-                        ))
-                      : "-"}
-                  </td>
-                  <td className="border px-4 py-1">
-                    {answer.companiesName.length > 0
-                      ? answer.companiesName.map((company) => (
-                          <span
-                            key={company}
-                            className={getHighlightedClass(
-                              correctAnswer.companiesName,
-                              [company]
-                            )}
-                          >
-                            {company}{" "}
-                          </span>
-                        ))
-                      : "-"}
-                  </td>
-                  <td className="border px-4 py-1">
-                    {answer.platforms.length > 0
-                      ? answer.platforms.map((platform) => (
-                          <span
-                            key={platform}
-                            className={getHighlightedClass(
-                              correctAnswer.platforms,
-                              [platform]
-                            )}
-                          >
-                            {platform}{" "}
-                          </span>
-                        ))
-                      : "-"}
-                  </td>
-                  <td className="border px-4 py-1">
-                    {answer.year
-                      ? renderYearComparison(correctAnswer.year, answer.year)
-                      : "-"}
-                  </td>
-                  <td className="border px-4 py-1">
-                    {answer.gameModes.length > 0
-                      ? answer.gameModes.map((gameMode) => (
-                          <span
-                            key={gameMode}
-                            className={getHighlightedClass(
-                              correctAnswer.gameModes,
-                              [gameMode]
-                            )}
-                          >
-                            {gameMode}{" "}
-                          </span>
-                        ))
-                      : "-"}
-                  </td>
-                  <td className="border px-4 py-1">
-                    {answer.gameEngines.length > 0
-                      ? answer.gameEngines.map((gameEngine) => (
-                          <span
-                            key={gameEngine}
-                            className={getHighlightedClass(
-                              correctAnswer.gameEngines,
-                              [gameEngine]
-                            )}
-                          >
-                            {gameEngine}{" "}
-                          </span>
-                        ))
-                      : "-"}
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  };
-
   return (
     <Layout title={"By characteristics"}>
       <main className="container mx-auto p-4">
@@ -305,7 +156,12 @@ function ByCharacteristics() {
               handleInputChange={handleInputChange}
               checkAnswer={checkAnswer}
             />
-            {renderTable(answers, correctAnswer!)}
+            <Table
+              answers={answers}
+              correctAnswer={correctAnswer}
+              getHighlightedClass={getHighlightedClass}
+              renderYearComparison={renderYearComparison}
+            />
           </div>
         )}
       </main>

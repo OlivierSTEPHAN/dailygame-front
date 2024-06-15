@@ -50,6 +50,10 @@ export const submitAnswerCharacteristics = async (
       body: JSON.stringify({ answer }),
     });
     const data = await response.json();
+    if(response.status === 404) {
+      toast.error(`Game not found`);
+      return undefined;
+    }
     return data;
   } catch (error) {
     toast.error(`Error submitting answer for characteristics: ${error.message}`);
