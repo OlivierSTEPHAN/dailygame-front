@@ -59,7 +59,7 @@ function ByCharacteristics() {
       return;
     }
     const result = await submitAnswerCharacteristics(answer);
-    console.log(result);
+    setInput("");
     if (result != undefined) {
       setAnswers((prevAnswers) => [...prevAnswers, result]);
       if (compareGame(result, correctAnswer!)) {
@@ -96,6 +96,21 @@ function ByCharacteristics() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    const now = new Date();
+    const currentDay = now.getDate();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    const currentDate = `${currentDay}-${currentMonth}-${currentYear}`;
+
+    const gameState = {
+      started,
+      answers,
+      updatedAt: currentDate,
+    };
+    localStorage.setItem(GAME_STATE_KEY, JSON.stringify(gameState));
+  }, [started, answers]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "ArrowDown") {
