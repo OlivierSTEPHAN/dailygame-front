@@ -37,31 +37,36 @@ const GamePlay: React.FC<GamePlayProps> = ({
   return (
     <div className="text-center">
       {screenshots.length > 0 && currentIndex < screenshots.length ? (
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-center">
-          <div className="mx-auto my-4 max-w-full h-auto md:w-3/4 md:mr-4">
-            <div className="inline-block max-h-[70vh] max-w-full">
-              <Image
-                src={screenshots[currentIndex]}
-                alt={`Screenshot ${currentIndex + 1}`}
-                className="object-contain"
-                width={600}
-                height={500}
-              />
-            </div>
+        <div className="flex flex-col">
+          <div className="text-2xl font-semibold text-center my-8">
+            {currentIndex + 1}/{screenshots.length}
           </div>
-          <GameInput
-            input={input}
-            handleInputChange={handleInputChange}
-            handleKeyDown={handleKeyDown}
-            showSuggestions={showSuggestions}
-            suggestions={suggestions}
-            suggestionsRef={suggestionsRef}
-            selectedIndex={selectedIndex}
-            setInput={setInput}
-            setShowSuggestions={setShowSuggestions}
-            setSelectedIndex={setSelectedIndex}
-            checkAnswer={checkAnswer}
-          />
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-center">
+            <div className="mx-auto my-4 max-w-full h-auto md:w-3/4 md:mr-4">
+              <div className="inline-block max-h-[70vh] max-w-full">
+                <Image
+                  src={screenshots[currentIndex]}
+                  alt={`Screenshot ${currentIndex + 1}`}
+                  className="object-contain"
+                  width={600}
+                  height={500}
+                />
+              </div>
+            </div>
+            <GameInput
+              input={input}
+              handleInputChange={handleInputChange}
+              handleKeyDown={handleKeyDown}
+              showSuggestions={showSuggestions}
+              suggestions={suggestions}
+              suggestionsRef={suggestionsRef}
+              selectedIndex={selectedIndex}
+              setInput={setInput}
+              setShowSuggestions={setShowSuggestions}
+              setSelectedIndex={setSelectedIndex}
+              checkAnswer={checkAnswer}
+            />
+          </div>
         </div>
       ) : null}
     </div>

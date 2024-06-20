@@ -2,6 +2,8 @@ import Table from "@/components/ByCharacteristics/Table";
 import GameInput from "@/components/GameInput";
 import GameStart from "@/components/GameStart";
 import Layout from "@/components/Layout";
+import useWindowSize from "react-use/lib/useWindowSize";
+import { FlipWords } from "@/components/ui/flip-words";
 import { Characteristics } from "@/model/Characteristics";
 import {
   fetchSuggestions,
@@ -11,6 +13,7 @@ import {
 import { compareGame } from "@/utils/comparator";
 import debounce from "lodash.debounce";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import Confetti from "react-confetti";
 
 const GAME_STATE_KEY = "characteristicsGameState";
 
@@ -24,6 +27,7 @@ function ByCharacteristics() {
   const suggestionsRef = useRef<HTMLDivElement>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const { width, height } = useWindowSize();
 
   useEffect(() => {
     fetchCharacteristics().then((data) => setCorrectAnswer(data));
@@ -158,6 +162,20 @@ function ByCharacteristics() {
           />
         ) : (
           <div className="text-center">
+            {win && <Confetti width={width} height={height} />}
+            <div className="text-left text-lg font-semibold mt-4">
+              The game of the day could be :
+              <FlipWords
+                words={[
+                  "Borderlands",
+                  "Payday",
+                  "Pokémon",
+                  "Skyrim",
+                  "Zelda",
+                  "Fallout",
+                ]}
+              />
+            </div>
             <GameInput
               input={input}
               selectedIndex={selectedIndex}
@@ -171,6 +189,10 @@ function ByCharacteristics() {
               handleInputChange={handleInputChange}
               checkAnswer={checkAnswer}
             />
+            <p className="text-left text-lg font-semibold mt-4">
+              Find the game by its characteristics
+            </p>
+
             <Table
               answers={answers}
               correctAnswer={correctAnswer}

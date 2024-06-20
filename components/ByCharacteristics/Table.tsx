@@ -1,5 +1,6 @@
 import React from "react";
 import { Characteristics } from "@/model/Characteristics";
+import { motion } from "framer-motion";
 
 interface TableProps {
   answers: Characteristics[];
@@ -41,7 +42,12 @@ const Table: React.FC<TableProps> = ({
         <tbody>
           {answers.length > 0 &&
             answers.map((answer, index) => (
-              <tr key={index}>
+              <motion.tr
+                key={index}
+                initial={{ y: 100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.1 + index * 0.1 }} // Add delay based on index
+              >
                 <td className="border px-4 py-1">{index + 1}</td>
                 <td
                   className={`border px-4 py-1 ${getHighlightedClass(
@@ -159,7 +165,7 @@ const Table: React.FC<TableProps> = ({
                       ))
                     : "-"}
                 </td>
-              </tr>
+              </motion.tr>
             ))}
         </tbody>
       </table>
