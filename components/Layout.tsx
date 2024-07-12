@@ -36,8 +36,30 @@ const Layout: React.FC<LayoutProps> = ({ title, description, children }) => {
     >
       <Head>
         <title>{title}</title>
+        <link rel="icon" href="/static/favicon.ico" type="image/x-icon" />
         {description && <meta name="description" content={description} />}
-        <link rel="icon" href="/favicon.ico" />
+
+        {/* Responsive meta tag */}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {/* Charset meta tag */}
+        <meta charSet="utf-8" />
+        {/* Robots meta tag */}
+        <meta name="robots" content="index, follow" />
+        {/* Author meta tag */}
+        <meta name="author" content="Olivier Stephan" />
+        {/* Keywords meta tag */}
+        <meta name="keywords" content="dailygame, game, daily, guess, screenshot, characteristics" />
+        {/* Open Graph tags */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        {description && <meta property="og:description" content={description} />}
+        <meta property="og:image" content="/screenshot.webp" />
+        <meta property="og:url" content={router.asPath} />
+        {/* Twitter Card tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        {description && <meta name="twitter:description" content={description} />}
+        <meta name="twitter:image" content="/screenshot.webp" />
       </Head>
       <header>
         {(router.pathname !== '/' && router.pathname !== '/by-screenshots') && (

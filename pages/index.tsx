@@ -6,8 +6,8 @@ import ChooseGame from "@/components/ChooseGame";
 const Home: React.FC = () => {
   return (
     <Layout
-      title={"Game Guessing App"}
-      description="Guess the video game based on screenshots"
+      title={"DailyGame"}
+      description="Guess the video game based on screenshots, or its characteristics."
     >
       <ChooseGame />
     </Layout>
