@@ -10,7 +10,7 @@ function GameSelection() {
       <WordPullUp words={"Welcome to DailyGame!"} className="text-white" />
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.6 }}>
         <h2 className="text-xl text-center text-white mt-5">
-          The game guessing app, each day you'll have new games to find!
+          The game guessing app, each day you&apos;ll have new games to find!
         </h2>
       </motion.div>
       <p className="text-center text-xl italic text-white mt-10">Choose a game mode to start playing.</p>
