@@ -24,7 +24,7 @@ const Table: React.FC<TableProps> = ({
 
   return (
     <div className="overflow-x-auto">
-      <table className="table-auto w-full mt-4 border-collapse">
+      <table className="table-auto w-full border-collapse">
         <thead>
           <tr>
             <th className="px-4 py-2">#</th>
@@ -43,7 +43,7 @@ const Table: React.FC<TableProps> = ({
           {answers.length > 0 &&
             answers.map((answer, index) => (
               <motion.tr
-                key={index}
+                key={answer.name} // Ensure unique key for each element
                 initial={{ y: 100, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.1 + index * 0.1 }} // Add delay based on index
@@ -60,74 +60,74 @@ const Table: React.FC<TableProps> = ({
                 <td className="border px-4 py-1">
                   {answer.genres
                     ? answer.genres.map((genre) => (
-                        <span
-                          key={genre}
-                          className={getHighlightedClass(correctAnswer.genres, [
-                            genre,
-                          ])}
-                        >
-                          {genre}{" "}
-                        </span>
-                      ))
+                      <span
+                        key={genre}
+                        className={getHighlightedClass(correctAnswer.genres, [
+                          genre,
+                        ])}
+                      >
+                        {genre}{" "}
+                      </span>
+                    ))
                     : "-"}
                 </td>
                 <td className="border px-4 py-1">
                   {answer.pov
                     ? answer.pov.map((pov) => (
-                        <span
-                          key={pov}
-                          className={getHighlightedClass(correctAnswer.pov, [
-                            pov,
-                          ])}
-                        >
-                          {pov}{" "}
-                        </span>
-                      ))
+                      <span
+                        key={pov}
+                        className={getHighlightedClass(correctAnswer.pov, [
+                          pov,
+                        ])}
+                      >
+                        {pov}{" "}
+                      </span>
+                    ))
                     : "-"}
                 </td>
                 <td className="border px-4 py-1">
                   {answer.franchises
                     ? answer.franchises.map((franchise) => (
-                        <span
-                          key={franchise}
-                          className={getHighlightedClass(
-                            correctAnswer.franchises,
-                            [franchise]
-                          )}
-                        >
-                          {franchise}{" "}
-                        </span>
-                      ))
+                      <span
+                        key={franchise}
+                        className={getHighlightedClass(
+                          correctAnswer.franchises,
+                          [franchise]
+                        )}
+                      >
+                        {franchise}{" "}
+                      </span>
+                    ))
                     : "-"}
                 </td>
                 <td className="border px-4 py-1">
                   {answer.companiesName
                     ? answer.companiesName.map((company) => (
-                        <span
-                          key={company}
-                          className={getHighlightedClass(
-                            correctAnswer.companiesName,
-                            [company]
-                          )}
-                        >
-                          {company}{" "}
-                        </span>
-                      ))
+                      <span
+                        key={company}
+                        className={getHighlightedClass(
+                          correctAnswer.companiesName,
+                          [company]
+                        )}
+                      >
+                        {company}{" "}
+                      </span>
+                    ))
                     : "-"}
                 </td>
                 <td className="border px-4 py-1">
                   {answer.platforms
                     ? answer.platforms.map((platform) => (
-                        <span
-                          key={platform}
-                          className={getHighlightedClass(
-                            correctAnswer.platforms,
-                            [platform]
-                          )}
-                        >
-                          {platform}{" "}
-                        </span>
-                      ))
+                      <span
+                        key={platform}
+                        className={getHighlightedClass(
+                          correctAnswer.platforms,
+                          [platform]
+                        )}
+                      >
+                        {platform}{" "}
+                      </span>
+                    ))
                     : "-"}
                 </td>
                 <td className="border px-4 py-1">
@@ -138,31 +138,31 @@ const Table: React.FC<TableProps> = ({
                 <td className="border px-4 py-1">
                   {answer.gameModes
                     ? answer.gameModes.map((gameMode) => (
-                        <span
-                          key={gameMode}
-                          className={getHighlightedClass(
-                            correctAnswer.gameModes,
-                            [gameMode]
-                          )}
-                        >
-                          {gameMode}{" "}
-                        </span>
-                      ))
+                      <span
+                        key={gameMode}
+                        className={getHighlightedClass(
+                          correctAnswer.gameModes,
+                          [gameMode]
+                        )}
+                      >
+                        {gameMode}{" "}
+                      </span>
+                    ))
                     : "-"}
                 </td>
                 <td className="border px-4 py-1">
                   {answer.gameEngines
                     ? answer.gameEngines.map((gameEngine) => (
-                        <span
-                          key={gameEngine}
-                          className={getHighlightedClass(
-                            correctAnswer.gameEngines,
-                            [gameEngine]
-                          )}
-                        >
-                          {gameEngine}{" "}
-                        </span>
-                      ))
+                      <span
+                        key={gameEngine}
+                        className={getHighlightedClass(
+                          correctAnswer.gameEngines,
+                          [gameEngine]
+                        )}
+                      >
+                        {gameEngine}{" "}
+                      </span>
+                    ))
                     : "-"}
                 </td>
               </motion.tr>

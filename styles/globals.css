@@ -2,16 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  color: white;
+}
+
 /* Animation for the golden border */
 @keyframes goldenBorder {
   0% {
     border-color: gold;
     box-shadow: 0 0 1px gold, 0 0 2px gold, 0 0 3px gold, 0 0 4px gold;
   }
+
   50% {
     border-color: yellow;
     box-shadow: 0 0 2px yellow, 0 0 4px yellow, 0 0 6px yellow, 0 0 8px yellow;
   }
+
   100% {
     border-color: gold;
     box-shadow: 0 0 1px gold, 0 0 2px gold, 0 0 3px gold, 0 0 4px gold;

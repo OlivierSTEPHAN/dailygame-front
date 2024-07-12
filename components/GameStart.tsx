@@ -4,7 +4,7 @@ import { CoolMode } from "./ui/cool-mode";
 interface GameStartProps {
   startGame: () => void;
   title: string;
-  description: string;
+  description: React.ReactNode;
 }
 
 const GameStart: React.FC<GameStartProps> = ({
@@ -13,18 +13,17 @@ const GameStart: React.FC<GameStartProps> = ({
   description,
 }) => {
   return (
-    <div className="text-center">
-      <h1 className="text-2xl font-bold my-4">{title}</h1>
-      <p>{description}</p>
-      <CoolMode>
-        <button
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
-          onClick={startGame}
-        >
-          Start
-        </button>
-      </CoolMode>
-    </div>
+    <main className="flex flex-col p-2 items-center">
+      <h1 className="text-2xl font-bold">{title}</h1>
+      <hr className="my-4"></hr>
+      <div>{description}</div>
+      <button
+        className="mt-10 px-4 py-2 bg-green-600 text-white rounded"
+        onClick={startGame}
+      >
+        Start
+      </button>
+    </main>
   );
 };
 

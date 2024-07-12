@@ -65,7 +65,7 @@ function ByCharacteristics() {
     const result = await submitAnswerCharacteristics(answer);
     setInput("");
     if (result != undefined) {
-      setAnswers((prevAnswers) => [...prevAnswers, result]);
+      setAnswers((prevAnswers) => [result, ...prevAnswers]);
       if (compareGame(result, correctAnswer!)) {
         setWin(true);
       }
@@ -158,10 +158,15 @@ function ByCharacteristics() {
           <GameStart
             startGame={startGame}
             title="Guess the Game by Characteristics"
-            description="A random game is selected and you have to guess the game by its characteristics."
+            description={
+              <>
+                <p>A random game has been chosen, find it thanks to the matching characteristics !</p>
+                <p>You can use the suggestions to help you.</p>
+              </>
+            }
           />
         ) : (
-          <div className="text-center">
+          <>
             {win && <Confetti width={width} height={height} />}
             <div className="text-left text-lg font-semibold mt-4">
               The game of the day could be :
@@ -178,6 +183,8 @@ function ByCharacteristics() {
             </div>
             <GameInput
               input={input}
+              duoAnswers={[]} // Not used in this mode
+              squareAnswers={[]} // Not used in this mode 
               selectedIndex={selectedIndex}
               suggestions={suggestions}
               showSuggestions={showSuggestions}
@@ -188,8 +195,9 @@ function ByCharacteristics() {
               handleKeyDown={handleKeyDown}
               handleInputChange={handleInputChange}
               checkAnswer={checkAnswer}
-            />
-            <p className="text-left text-lg font-semibold mt-4">
+              mode={"cash"}
+              handleInputClick={() => ""} />
+            <p className="text-left text-md italic font-semibold mt-10">
               Find the game by its characteristics
             </p>
 
@@ -199,7 +207,7 @@ function ByCharacteristics() {
               getHighlightedClass={getHighlightedClass}
               renderYearComparison={renderYearComparison}
             />
-          </div>
+          </>
         )}
       </main>
     </Layout>
