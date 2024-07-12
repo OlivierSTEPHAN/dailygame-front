@@ -38,7 +38,7 @@ const Layout: React.FC<LayoutProps> = ({ title, description, children }) => {
         <title>{title}</title>
         <link rel="icon" href="/static/favicon.ico" type="image/x-icon" />
         {description && <meta name="description" content={description} />}
-
+        <link rel="canonical" href={`https://dailygame.fr`} />
         {/* Responsive meta tag */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         {/* Charset meta tag */}
@@ -60,6 +60,19 @@ const Layout: React.FC<LayoutProps> = ({ title, description, children }) => {
         <meta name="twitter:title" content={title} />
         {description && <meta name="twitter:description" content={description} />}
         <meta name="twitter:image" content="/screenshot.webp" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "url": "https://dailygame.fr",
+            "name": "DailyGame",
+            "description": description || "DailyGame - the game guessing app, each day you'll have new games to find!",
+            "publisher": {
+              "@type": "Organization",
+              "name": "DailyGame"
+            }
+          })}
+        </script>
       </Head>
       <header>
         {(router.pathname !== '/' && router.pathname !== '/by-screenshots') && (

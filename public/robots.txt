@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://dailygame.fr
+
+# Sitemaps
+Sitemap: https://dailygame.fr/sitemap.xml
