@@ -21,7 +21,7 @@ const Layout: React.FC<LayoutProps> = ({ title, description, children }) => {
   React.useEffect(() => {
     const interval = setInterval(() => {
       cycleAnimate();
-    }, 5000); // Change every 5 seconds
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [cycleAnimate]);

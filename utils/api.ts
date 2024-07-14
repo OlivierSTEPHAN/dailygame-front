@@ -50,7 +50,7 @@ export const submitAnswerCharacteristics = async (
       body: JSON.stringify({ answer }),
     });
     const data = await response.json();
-    if(response.status === 404) {
+    if (response.status === 404) {
       toast.error(`Game not found`);
       return undefined;
     }
@@ -60,6 +60,33 @@ export const submitAnswerCharacteristics = async (
     return undefined;
   }
 };
+
+export const submitCharacteristicsScore = async (score: number): Promise<void> => {
+  try {
+    await fetch(`${BASE_URL}/characteristics/score?dailyGameScore=${score}`, {
+      method: "POST"
+    });
+  } catch (error) {
+    toast.error(`Error submitting screenshot score: ${error.message}`);
+  }
+
+}
+
+export const getCharacteristicsScore = async (): Promise<number> => {
+  try {
+    const response = await fetch(`${BASE_URL}/characteristics/score`);
+    const data = await response.json();
+    if (response.status === 500) {
+      toast.error(`Error fetching characteristics score`);
+      return 0;
+    }
+    // On triche un peu, si personne a joué, on met 9
+    return data == 0 ? 9 : data;
+  } catch (error) {
+    toast.error(`Error fetching characteristics score`);
+    return 0;
+  }
+}
 
 export const submitAnswerScreenshot = async (
   currentIndex: number,
@@ -81,6 +108,38 @@ export const submitAnswerScreenshot = async (
     return false;
   }
 };
+
+export const submitScreenshotScore = async (scores: number[]): Promise<void> => {
+  try {
+    await fetch(`${BASE_URL}/screenshots/score`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ "dailyGamesScore": scores }),
+    });
+  } catch (error) {
+    toast.error(`Error submitting screenshot score: ${error.message}`);
+  }
+
+}
+
+export const fetchScreenshotScore = async (): Promise<number[]> => {
+  try {
+    const result = await fetch(`${BASE_URL}/screenshots/score`);
+    const data = await result.json();
+
+    if (result.status === 500) {
+      toast.error(`Error fetching screenshot score`);
+      return [];
+    }
+    return data;
+  } catch (error) {
+    toast.error(`Error submitting screenshot score: ${error.message}`);
+    return [];
+  }
+
+}
 
 export const fetchSuggestions = async (query: string): Promise<string[]> => {
   try {

@@ -6,12 +6,14 @@ import { toast } from 'react-toastify';
 
 interface GameEndProps {
   score: number[];
+  averageScore: number[];
   correctAnswersFromServer: Screenshot | undefined;
   answers: string[];
 }
 
 const GameEnd: React.FC<GameEndProps> = ({
   score,
+  averageScore,
   correctAnswersFromServer,
   answers,
 }) => {
@@ -67,6 +69,7 @@ const GameEnd: React.FC<GameEndProps> = ({
               >
                 <p className="font-bold">Screenshot {index + 1}</p>
                 <p> Score : {score[index]}</p>
+                {averageScore.length >= index ? <p> Average score : {averageScore[index]}</p> : <></>}
                 <Image
                   src={correctAnswersFromServer.url[index]}
                   alt={`Capture d'écran ${index + 1}`}

@@ -9,6 +9,8 @@ import {
   fetchSuggestions,
   submitAnswerCharacteristics,
   fetchCharacteristics,
+  submitCharacteristicsScore,
+  getCharacteristicsScore,
 } from "@/utils/api";
 import { compareGame } from "@/utils/comparator";
 import debounce from "lodash.debounce";
@@ -24,6 +26,7 @@ function ByCharacteristics() {
   const [win, setWin] = useState(false);
   const [correctAnswer, setCorrectAnswer] = useState<Characteristics>();
   const [answers, setAnswers] = useState<Characteristics[]>([]);
+  const [averageScore, setAverageScore] = useState(0);
   const suggestionsRef = useRef<HTMLDivElement>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -31,6 +34,7 @@ function ByCharacteristics() {
 
   useEffect(() => {
     fetchCharacteristics().then((data) => setCorrectAnswer(data));
+    getCharacteristicsScore().then((data) => setAverageScore(data));
     const savedState = localStorage.getItem(GAME_STATE_KEY);
     if (savedState) {
       const now = new Date();
@@ -68,6 +72,7 @@ function ByCharacteristics() {
       setAnswers((prevAnswers) => [result, ...prevAnswers]);
       if (compareGame(result, correctAnswer!)) {
         setWin(true);
+        submitCharacteristicsScore(answers.length);
       }
     }
   };
@@ -200,7 +205,7 @@ function ByCharacteristics() {
             <p className="text-left text-md italic font-semibold mt-10">
               Find the game by its characteristics
             </p>
-
+            <p> Player found the game on {averageScore} in average</p>
             <Table
               answers={answers}
               correctAnswer={correctAnswer}

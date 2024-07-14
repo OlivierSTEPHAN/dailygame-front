@@ -5,6 +5,8 @@ import {
   fetchScreenshots,
   submitAnswerScreenshot,
   fetchSuggestions,
+  submitScreenshotScore,
+  fetchScreenshotScore,
 } from "../utils/api";
 import { gamesList } from "@/utils/GamesList";
 import GameEnd from "@/components/ByScreenshot/GameEnd";
@@ -25,6 +27,7 @@ const ByScreenshots: React.FC = () => {
   const [input, setInput] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [score, setScore] = useState<number[]>([]);
+  const [averageScore, setAverageScore] = useState<number[]>([]);
   const suggestionsRef = useRef<HTMLDivElement>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -35,6 +38,7 @@ const ByScreenshots: React.FC = () => {
   useEffect(() => {
     fetchScreenshotsUrl().then((data) => setScreenshots(data));
     fetchScreenshots().then((data) => setCorrectAnswersFromServer(data));
+    fetchScreenshotScore().then((data) => setAverageScore(data));
     const savedState = localStorage.getItem(GAME_STATE_KEY);
     if (savedState) {
       const now = new Date();
@@ -102,11 +106,15 @@ const ByScreenshots: React.FC = () => {
     setShowSuggestions(false);
     setSelectedIndex(-1);
     setMode("cash"); // Reset mode to cash after answering
-
   }
 
+  useEffect(() => {
+    if (currentIndex >= screenshots.length) {
+      submitScreenshotScore(score);
+    }
+  }, [currentIndex]);
+
   const computeScore = (isGameOk: boolean, mode: "cash" | "duo" | "square") => {
-    // Si le jeu a été trouvé en cash alors 1000 points, en square 500 points, en duo 200 points, sinon 0
     if (!isGameOk) {
       return 0;
     }
@@ -255,6 +263,7 @@ const ByScreenshots: React.FC = () => {
             ) : (
               <GameEnd
                 score={score}
+                averageScore={averageScore}
                 correctAnswersFromServer={correctAnswersFromServer}
                 answers={answers}
               />
