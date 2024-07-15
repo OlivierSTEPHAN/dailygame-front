@@ -183,9 +183,33 @@ function ByCharacteristics() {
                   "Skyrim",
                   "Zelda",
                   "Fallout",
+                  "Overwatch",
+                  "Doom",
+                  "Celeste",
+                  "Hades",
+                  "Journey",
+                  "Spelunky",
+                  "Myst",
+                  "Fez",
+                  "Inside",
+                  "Control",
+                  "Portal",
+                  "Bastion",
+                  "Pyre",
+                  "Gris",
+                  "Limbo",
+                  "Undertale",
+                  "Crysis",
+                  "Dishonored",
+                  "Fortnite",
+                  "Apex",
                 ]}
               />
+
             </div>
+            <p className="text-left text-md italic font-semibold mt-10">
+              Find the game by its characteristics
+            </p>
             <GameInput
               input={input}
               duoAnswers={[]} // Not used in this mode
@@ -202,10 +226,8 @@ function ByCharacteristics() {
               checkAnswer={checkAnswer}
               mode={"cash"}
               handleInputClick={() => ""} />
-            <p className="text-left text-md italic font-semibold mt-10">
-              Find the game by its characteristics
-            </p>
-            <p> Player found the game on {averageScore} in average</p>
+            <p className="mt-10"> Type a random game, if characteristics matches they will be in <span className="text-green-500">green</span>.</p>
+            <p> On average, it took players {averageScore} attempts to find the game.</p>
             <Table
               answers={answers}
               correctAnswer={correctAnswer}

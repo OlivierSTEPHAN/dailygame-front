@@ -36,6 +36,7 @@ const GameInput: React.FC<GameInputProps> = ({
   handleInputClick,
   checkAnswer,
 }) => {
+
   return (
     <div className="flex w-full min-h-20 items-center space-x-2 bg-white rounded-3xl shadow-lg p-4 relative">
       {mode === "cash" && (
@@ -46,7 +47,7 @@ const GameInput: React.FC<GameInputProps> = ({
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             className="p-2 rounded-full flex-grow outline-none text-black"
-            placeholder="Devine le jeu"
+            placeholder="Guess the game"
             onFocus={() => setShowSuggestions(true)}
           />
           <button

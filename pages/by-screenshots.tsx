@@ -16,6 +16,7 @@ import Layout from "@/components/Layout";
 import { Screenshot } from "@/model/Screenshot";
 
 const GAME_STATE_KEY = "screenshotGameState";
+const DEFAULT_TIMER = 20;
 
 const ByScreenshots: React.FC = () => {
   const [started, setStarted] = useState(false);
@@ -35,6 +36,8 @@ const ByScreenshots: React.FC = () => {
   const [duoAnswers, setDuoAnswers] = useState<string[]>([]);
   const [squareAnswers, setSquareAnswers] = useState<string[]>([]);
 
+  const [remainingSeconds, setRemainingSeconds] = useState(DEFAULT_TIMER);
+
   useEffect(() => {
     fetchScreenshotsUrl().then((data) => setScreenshots(data));
     fetchScreenshots().then((data) => setCorrectAnswersFromServer(data));
@@ -48,11 +51,12 @@ const ByScreenshots: React.FC = () => {
       const currentDate = `${currentDay}-${currentMonth}-${currentYear}`;
       const savedState = localStorage.getItem(GAME_STATE_KEY);
       if (savedState) {
-        const { started, currentIndex, answers, score, updatedAt, mode, duoAnswers, squareAnswers } =
+        const { started, currentIndex, remainingSeconds, answers, score, updatedAt, mode, duoAnswers, squareAnswers } =
           JSON.parse(savedState);
         if (updatedAt === currentDate && started) {
           setStarted(started);
           setCurrentIndex(currentIndex);
+          setRemainingSeconds(remainingSeconds);
           setAnswers(answers);
           setScore(score);
           setMode(mode);
@@ -75,6 +79,7 @@ const ByScreenshots: React.FC = () => {
     const gameState = {
       started,
       currentIndex,
+      remainingSeconds,
       answers,
       score,
       updatedAt: currentDate,
@@ -83,7 +88,30 @@ const ByScreenshots: React.FC = () => {
       squareAnswers
     };
     localStorage.setItem(GAME_STATE_KEY, JSON.stringify(gameState));
-  }, [started, currentIndex, mode]);
+  }, [started, currentIndex, remainingSeconds, mode]);
+
+  useEffect(() => {
+    if (score.length > 0 && currentIndex >= screenshots.length) {
+      submitScreenshotScore(score);
+    }
+  }, [currentIndex]);
+
+  useEffect(() => {
+    if (currentIndex >= screenshots.length) {
+      return;
+    }
+    let myInterval = setInterval(() => {
+      if (remainingSeconds > 0) {
+        setRemainingSeconds(remainingSeconds - 1);
+      }
+      if (remainingSeconds === 0) {
+        checkAnswer();
+      }
+    }, 1000)
+    return () => {
+      clearInterval(myInterval);
+    };
+  });
 
   const checkAnswer = async () => {
     const result = await submitAnswerScreenshot(currentIndex, input);
@@ -105,14 +133,9 @@ const ByScreenshots: React.FC = () => {
     setSuggestions([]);
     setShowSuggestions(false);
     setSelectedIndex(-1);
-    setMode("cash"); // Reset mode to cash after answering
+    setMode("cash");
+    setRemainingSeconds(DEFAULT_TIMER);
   }
-
-  useEffect(() => {
-    if (currentIndex >= screenshots.length) {
-      submitScreenshotScore(score);
-    }
-  }, [currentIndex]);
 
   const computeScore = (isGameOk: boolean, mode: "cash" | "duo" | "square") => {
     if (!isGameOk) {
@@ -126,7 +149,6 @@ const ByScreenshots: React.FC = () => {
     } else {
       return 500;
     }
-
   }
 
   const debouncedFetchSuggestions = useCallback(
@@ -143,7 +165,7 @@ const ByScreenshots: React.FC = () => {
   };
 
   const handleInputClick = (selectedAnswer: string) => {
-    setInput(prevInput => selectedAnswer);
+    setInput(selectedAnswer);
     checkAnswerWhenClicked(selectedAnswer);
   }
 
@@ -247,6 +269,7 @@ const ByScreenshots: React.FC = () => {
                 squareAnswers={squareAnswers}
                 screenshots={screenshots}
                 currentIndex={currentIndex}
+                timer={remainingSeconds}
                 input={input}
                 handleInputChange={handleInputChange}
                 handleInputClick={handleInputClick}

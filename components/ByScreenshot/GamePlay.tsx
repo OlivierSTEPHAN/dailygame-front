@@ -11,6 +11,7 @@ interface GamePlayProps {
   screenshots: string[];
   currentIndex: number;
   input: string;
+  timer: number;
   selectedIndex: number;
   suggestions: string[];
   showSuggestions: boolean;
@@ -31,6 +32,7 @@ const GamePlay: React.FC<GamePlayProps> = ({
   squareAnswers,
   screenshots,
   currentIndex,
+  timer,
   input,
   selectedIndex,
   suggestions,
@@ -52,6 +54,9 @@ const GamePlay: React.FC<GamePlayProps> = ({
             <div className="text-xl font-semibold text-black">
               {currentIndex + 1}/{screenshots.length}
             </div>
+            <div className="text-xl font-semibold text-black">
+              {timer == 21 ? 20 : timer} sec
+            </div>
           </div>
           <div className="flex-1 flex items-center justify-center max-h-full max-w-full p-4">
             <Image
@@ -64,21 +69,21 @@ const GamePlay: React.FC<GamePlayProps> = ({
           <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 w-full max-w-xl px-4">
             <div className="flex justify-start pl-10 translate-y-2">
               <div
-                className={`pr-2 pl-2 pt-2 pb-4 rounded-md min-w-20 cursor-pointer ${mode === "cash" ? "bg-green-500 text-white" : "bg-gray-200 text-gray-600"}`}
+                className={`pr-2 pl-2 pt-2 pb-4 rounded-md min-w-20 cursor-pointer ${mode === "cash" ? "bg-green-500 text-white z-10 scale-105" : "bg-gray-200 text-gray-600"}`}
                 onClick={() => handleModeChange("cash")}
               >
                 Cash
                 {(mode === "duo" || mode === "square") && <FaLock className="ml-2 inline" />}
               </div>
               <div
-                className={`pr-2 pl-2 pt-2 pb-4 rounded-md min-w-20 cursor-pointer ${mode === "duo" ? "bg-green-500 text-white" : "bg-gray-200 text-gray-600"}`}
+                className={`pr-2 pl-2 pt-2 pb-4 rounded-md min-w-20 cursor-pointer ${mode === "duo" ? "bg-green-500 text-white z-10 scale-105" : "bg-gray-200 text-gray-600"}`}
                 onClick={() => handleModeChange("duo")}
               >
                 Duo
                 {(mode === "square") && <FaLock className="ml-2 inline" />}
               </div>
               <div
-                className={`pr-2 pl-2 pt-2 pb-4 rounded-md min-w-20 cursor-pointer ${mode === "square" ? "bg-green-500 text-white" : "bg-gray-200 text-gray-600"}`}
+                className={`pr-2 pl-2 pt-2 pb-4 rounded-md min-w-20 cursor-pointer ${mode === "square" ? "bg-green-500 text-white z-10 scale-105" : "bg-gray-200 text-gray-600"}`}
                 onClick={() => handleModeChange("square")}
               >
                 Square

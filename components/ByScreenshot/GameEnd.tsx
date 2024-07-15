@@ -34,11 +34,29 @@ const GameEnd: React.FC<GameEndProps> = ({
 
   const copyResultsToClipboard = () => {
     const totalScore = score.reduce((acc, currentValue) => acc + currentValue, 0);
-    // Add "DailyGame" and the current date formatted dd/mm
     const formattedResults =
       `DailyGame - ${new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })}\n` +
       `Total Score: ${totalScore}\n` +
-      score.map((s, index) => `${index + 1} - ${s}`).join('\n');
+      score.map((s, index) => {
+        let indexString = "";
+        if (index + 1 == 10) {
+          indexString = "10";
+        } else {
+          indexString = (index + 1) + " ";
+        }
+
+        if (s == 1000) {
+          return `${indexString} - 🟩  ${s}`
+        } else if (s == 500) {
+          return `${indexString} - 🟨  ${s}`
+        } else if (s == 200) {
+          return `${indexString} - 🟧  ${s}`
+        } else {
+          return `${indexString} - 🟥  ${s}`
+        }
+
+
+      }).join('\n');
 
     navigator.clipboard.writeText(formattedResults).then(() => {
       toast.success("Results copied to clipboard!");
